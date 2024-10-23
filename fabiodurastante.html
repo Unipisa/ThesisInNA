@@ -23,9 +23,29 @@
 
 <p class="Section">1 &ensp; Algoritmi per l'Algebra Lineare in Ambiente HPC</p>
 
-<p class="BodyText Justified">L'<strong>High-Performance Computing (HPC)<strong> si riferisce all'uso di potenti sistemi di calcolo e tecnologie avanzate per eseguire calcoli a velocità elevate. Questi sistemi, spesso costituiti da supercomputer o cluster di migliaia di processori interconnessi, permettono di risolvere problemi computazionalmente intensivi che richiederebbero tempi proibitivamente lunghi o quantità di memoria non disponibili su macchine tradizionali. L'HPC viene utilizzato in vari campi, tra cui la simulazione di fenomeni fisici (come la fluidodinamica o la previsione del clima), l'analisi di grandi quantità di dati (big data) e la modellizzazione di sistemi complessi (come proteine o reazioni chimiche). L'obiettivo principale dell'HPC è ottimizzare le prestazioni, migliorare la velocità di esecuzione dei calcoli e ridurre i tempi di elaborazione per problemi di grandi dimensioni e alta complessità.</p>
+<p class="BodyText Justified">L'<strong>High-Performance Computing (HPC)</strong> si riferisce all'uso di potenti sistemi di calcolo e tecnologie avanzate per eseguire calcoli a velocità elevate. Questi sistemi, spesso costituiti da supercomputer o cluster di migliaia di processori interconnessi, permettono di risolvere problemi computazionalmente intensivi che richiederebbero tempi proibitivamente lunghi o quantità di memoria non disponibili su macchine tradizionali. L'HPC viene utilizzato in vari campi, tra cui la simulazione di fenomeni fisici (come la fluidodinamica o la previsione del clima), l'analisi di grandi quantità di dati (big data) e la modellizzazione di sistemi complessi (come proteine o reazioni chimiche). L'obiettivo principale dell'HPC è ottimizzare le prestazioni, migliorare la velocità di esecuzione dei calcoli e ridurre i tempi di elaborazione per problemi di grandi dimensioni e alta complessità.</p>
 
-<p class="BodyText Justified"> Al cuore dei molti problemi che si possono affrontare in ambiente HPC ci sono gli algoritmi, più o meno di base dell'Algebra Lineare Numerica: metodi di Krylov per la soluzione dei sistemi lineari, precondizionatori di tipo <strong>domain decomposition</strong> o <strong>multigrid algebrico</strong>.</p>
+<figure>
+  <img src="assets/images/leonardo-cineca.webp" alt="Supercomputer Leonardo" style="width:70%">
+  <figcaption>Fig.1 - Il Supercomputer Leonardo presso il CINECA.</figcaption>
+</figure> 
+
+<p class="BodyText Justified"> Al cuore dei molti problemi che si possono affrontare in ambiente HPC ci sono gli algoritmi, più o meno di base dell'Algebra Lineare Numerica: <strong>metodi di Krylov</strong> per la soluzione dei sistemi lineari, precondizionatori di tipo <strong>domain decomposition</strong> o <strong>multigrid algebrico</strong>.</p>
+
+<p class="BodyText Justified"> 
+Una proficua area di indagine e possibile sorgente di argomenti di tesi è quella di studiare i cosìddetti <strong>metodi di Krylov che evitano le comunicazioni</strong>. Consideriamo come esempio il caso del <strong>gradiente coniugato</strong> per la soluzione di un sistema lineare della forma
+\[
+A \mathbf{x} = \mathbf{b}, \qquad A \in \mathbb{R}^{n \times n},\; \mathbf{x},\mathbf{b} \in \mathbb{R}^n, 
+\]
+con \(n \approx 10^{12}\) ed \(A\) matrice simmetrica, definita positiva e sparsa; una matrice in cui il numero di elementi nonzero è dell'ordine della dimensione della matrice e non del suo quadrato. In generale una matrice così grande può essere contenuta solo all'interno di un <strong>sistema distribuito</strong>, ovvero diverse computer interconnessi da una rete di scambio dati; ad esempio partizionando il suo grafo di adiacenza e partizionando in maniera consistente i vettori. 
+</p>
+<figure>
+  <img src="assets/images/graph-partitioning.jpg" alt="Supercomputer Leonardo" style="width:55%">
+  <figcaption>Fig.2 - Esempio di partizionamento del grafo di una matrice sparse e corrispondente partizionamento nei processi delel righe della matrice.</figcaption>
+</figure> 
+<p class="BodyText Justified"> 
+Questo ambiente di lavoro richiede ora, oltre le operazioni di macchina necessarie a compiere operazioni come il <em>prodotto matrice vettore</em> \( \mathbf{y} \gets \alpha A \mathbf{x} + \beta \mathbf{y}\) o il <em>prodotto scalare</em> \( \langle \mathbf{x},\mathbf{y} \rangle \), delle <strong>operazioni di comunicazione</strong> necessarie a scambiare tra i diversi processi i dati su cui compiere le operazioni. La differenza in queste due procedure è che il calcolo è estremamente più efficiente della comunicazione. 
+</p>
 
 <p class="Section">2 &ensp; Modellistica e Algoritmi per le Reti Complesse</p>
 
