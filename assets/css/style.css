@@ -110,6 +110,10 @@
     text-justify: inter-word;
 }
 
+.ReducedBottom{
+    margin-bottom: 2px;
+}
+
 .footerSize{
     height: 30vh;
     width: 100%;
@@ -159,5 +163,18 @@ li {
     font-size: 23px;
     text-align: Left;
     line-height: 125%;
+}
+.li3col {
     column-count: 3;
+    font-size: 18px;
+}
+figure {
+    text-align: center;
+}
+figcaption {
+    font-family: CMR;
+    font-size: 17px;
+    text-align: center;
+    line-height: 125%;
+    column-count: 1;
 }

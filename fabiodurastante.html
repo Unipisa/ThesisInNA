@@ -4,10 +4,29 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <meta charset="utf-8">
     <title>Possibili Argomenti di Tesi</title>
+    <link rel="stylesheet" href="assets/css/pseudocode.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
     </script>
+   <script>
+   window.MathJax = {
+     tex: {
+       inlineMath: [['$', '$'], ['\\(', '\\)']]
+     },
+     svg: {
+       fontCache: 'global'
+     }
+   };
+
+   (function () {
+     var script = document.createElement('script');
+     script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+     script.async = true;
+     document.head.appendChild(script);
+   })();
+   </script>
+
   </head>
   <body>
     <div class="Margins">
@@ -18,7 +37,8 @@
       
 
       
-          <p class="BodyText Justified"> Questa pagina è parte del documento sullo <a href="./index.html">Scrivere una Tesi in Analisi Numerica</a>.
+          <p class="BodyText Justified"> Questa pagina è parte del documento sullo <a href="./index.html">Scrivere una Tesi in Analisi Numerica</a>. I suggerimenti e le referenze contenute qui sono relative ad argomenti
+    che sto investigando al momento o di interesse attuale. Altre idee annesse o connesse a queste macroaree possono sicuramente essere discusse e valutate.
     </p>
 
 <p class="Section">1 &ensp; Algoritmi per l'Algebra Lineare in Ambiente HPC</p>
@@ -41,16 +61,156 @@ con \(n \approx 10^{12}\) ed \(A\) matrice simmetrica, definita positiva e spars
 </p>
 <figure>
   <img src="assets/images/graph-partitioning.jpg" alt="Supercomputer Leonardo" style="width:55%">
-  <figcaption>Fig.2 - Esempio di partizionamento del grafo di una matrice sparse e corrispondente partizionamento nei processi delel righe della matrice.</figcaption>
+  <figcaption>Fig.2 - Esempio di partizionamento del grafo di una matrice sparse e corrispondente partizionamento nei processi delle righe della matrice.</figcaption>
 </figure> 
 <p class="BodyText Justified"> 
-Questo ambiente di lavoro richiede ora, oltre le operazioni di macchina necessarie a compiere operazioni come il <em>prodotto matrice vettore</em> \( \mathbf{y} \gets \alpha A \mathbf{x} + \beta \mathbf{y}\) o il <em>prodotto scalare</em> \( \langle \mathbf{x},\mathbf{y} \rangle \), delle <strong>operazioni di comunicazione</strong> necessarie a scambiare tra i diversi processi i dati su cui compiere le operazioni. La differenza in queste due procedure è che il calcolo è estremamente più efficiente della comunicazione. 
+Questo ambiente di lavoro richiede ora, oltre le operazioni di macchina necessarie a compiere operazioni come il <em>prodotto matrice vettore</em> \( \mathbf{y} \gets \alpha A \mathbf{x} + \beta \mathbf{y}\) o il <em>prodotto scalare</em> \( \langle \mathbf{x},\mathbf{y} \rangle \), delle <strong>operazioni di comunicazione</strong> necessarie a scambiare tra i diversi processi i dati su cui compiere le operazioni. La differenza in queste due procedure è che il calcolo è estremamente più efficiente della comunicazione.<br>
+
+Ma dove avvengono le comunicazioni? Scriviamo la versione più semplice possibile del gradiente coniugato.
 </p>
+
+<div class='ps-root'><div class='ps-algorithm with-caption'><div class='ps-caption'><span class='ps-keyword'>Algorithm</span> Standard Conjugate Gradient</div>
+<div class='ps-algorithmic'>
+<div class='ps-state ps-indent-0'>Input: \(A \in \mathbb{R}^{n \times n}\) SPD, \(\mathbf{b} \in \mathbb{R}^n\), soluzione iniziale \(\mathbf{x}_0 \in \mathbb{R}^n\), tolleranza \(\varepsilon\)</div>
+<div class='ps-state ps-indent-0'>Output: Soluzione approssimata \(\mathbf{x}\)</div>
+<div class='ps-line ps-indent-0'></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(\mathbf{r}_0 \gets \mathbf{b} - A \mathbf{x}_0\)</span></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(\mathbf{p}_0 \gets \mathbf{r}_0\)</span></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(k \gets 0\)</span></div>
+<div class='ps-line ps-indent-0'></div>
+<div class='ps-while ps-indent-0'><span class='ps-keyword'>while</span> ( Norma residuo maggiore di \(\varepsilon\)  ) <span class='ps-keyword'>do</span>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\mathbf{v} = A \mathbf{p}_k\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\alpha_k \gets \frac{\mathbf{r}_k^T \mathbf{r}_k}{\mathbf{p}_k^T \mathbf{v}}\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\mathbf{x}_{k+1} \gets \mathbf{x}_k + \alpha_k \mathbf{p}_k\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\mathbf{r}_{k+1} \gets \mathbf{r}_k - \alpha_k \mathbf{v}\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\beta_k \gets \frac{\mathbf{r}_{k+1}^T \mathbf{r}_{k+1}}{\mathbf{r}_k^T \mathbf{r}_k}\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(\mathbf{p}_{k+1} \gets \mathbf{r}_{k+1} + \beta_k \mathbf{p}_k\)</span></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(k \gets k + 1\)</span></div>
+<div class='ps-keyword'>end while</div></div>
+</div>
+</div></div>
+<p class="BodyText Justified"> 
+In questa versione dell'algoritmo le comunicazioni avvengono nel calcolo del prodotto matrice vettore \( \mathbf{v} = A \mathbf{p}_k \) e nel calcolo dei prodotti scalari per ottenere \(\alpha_k\) e \(\beta_k\).
+Per tentare di ridurre le comunicazioni possiamo "raccogliere insieme" più passi formando il cosìddetto \(s\)-step CG:
+</p>
+<div class='ps-root'><div class='ps-algorithm with-caption'><div class='ps-caption'><span class='ps-keyword'>Algorithm</span> s-step Conjugate Gradient Method</div>
+<div class='ps-algorithmic'>
+<div class='ps-state ps-indent-0'>{Input:} SPD \(A \in \mathbb{R}^{n \times n}\), \(\mathbf{b} \in \mathbb{R}^n\), soluzione iniziale \(\mathbf{x}_0 \in \mathbb{R}^n\), numero di step \(s\), tolleranza \(\varepsilon\)</div>
+<div class='ps-state ps-indent-0'>{Output:} Solution vector \(\mathbf{x}\)</div>
+<div class='ps-line ps-indent-0'></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(\mathbf{r}_0 \gets \mathbf{b} - A \mathbf{x}_0\)</span></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(\mathbf{p}_0 \gets \mathbf{r}_0\)</span></div>
+<div class='ps-state ps-indent-0'><span class="arithmatex">\(k \gets 0\)</span></div>
+<div class='ps-line ps-indent-0'></div>
+<div class='ps-while ps-indent-0'><span class='ps-keyword'>while</span> (Non abbiamo raggiunto la convergenza) <span class='ps-keyword'>do</span>
+<div class='ps-state ps-indent-1'>% Generazione dei blocchi: Calcoliamo \(s\) passi alla volta</div>
+<div class='ps-for ps-indent-1'><span class='ps-keyword'>for</span> (<span class="arithmatex">\(j = 0\)</span> to <span class="arithmatex">\(s-1\)</span>) <span class='ps-keyword'>do</span>
+<div class='ps-state ps-indent-2'><span class="arithmatex">\(\alpha_{k+j} \gets \frac{\mathbf{r}_{k+j}^T \mathbf{r}_{k+j}}{\mathbf{p}_{k+j}^T A \mathbf{p}_{k+j}}\)</span></div>
+<div class='ps-state ps-indent-2'><span class="arithmatex">\(\mathbf{x}_{k+j+1} \gets \mathbf{x}_{k+j} + \alpha_{k+j} \mathbf{p}_{k+j}\)</span></div>
+<div class='ps-state ps-indent-2'><span class="arithmatex">\(\mathbf{r}_{k+j+1} \gets \mathbf{r}_{k+j} - \alpha_{k+j} A \mathbf{p}_{k+j}\)</span></div>
+<div class='ps-if ps-indent-2'><span class='ps-keyword'>if</span> (L'ultimo residuo ha norma minore di \(\varepsilon\)) <span class='ps-keyword'>then</span>
+<div class='ps-state ps-indent-3'>break</div>
+<div class='ps-keyword'>end if</div></div>
+<div class='ps-keyword'>end for</div></div>
+<div class='ps-line ps-indent-1'></div>
+<div class='ps-state ps-indent-1'>% Aggiorniamo le direzioni:</div>
+<div class='ps-state ps-indent-1'>Formiamo i blocchi \(\mathbf{R}_k = [\mathbf{r}_k, \mathbf{r}_{k+1}, \dots, \mathbf{r}_{k+s-1}]\) and \(\mathbf{P}_k = [\mathbf{p}_k, \mathbf{p}_{k+1}, \dots, \mathbf{p}_{k+s-1}]\)</div>
+<div class='ps-state ps-indent-1'>Ortogonalizziamo le colonne di \(\mathbf{R}_k\) e \(\mathbf{P}_k\)</div>
+<div class='ps-line ps-indent-1'></div>
+<div class='ps-for ps-indent-1'><span class='ps-keyword'>for</span> (<span class="arithmatex">\(j = 0\)</span> to <span class="arithmatex">\(s-1\)</span>) <span class='ps-keyword'>do</span>
+<div class='ps-state ps-indent-2'><span class="arithmatex">\(\beta_{k+j} \gets \frac{\mathbf{r}_{k+j+1}^T \mathbf{r}_{k+j+1}}{\mathbf{r}_{k+j}^T \mathbf{r}_{k+j}}\)</span></div>
+<div class='ps-state ps-indent-2'><span class="arithmatex">\(\mathbf{p}_{k+j+1} \gets \mathbf{r}_{k+j+1} + \beta_{k+j} \mathbf{p}_{k+j}\)</span></div>
+<div class='ps-keyword'>end for</div></div>
+<div class='ps-line ps-indent-1'></div>
+<div class='ps-state ps-indent-1'><span class="arithmatex">\(k \gets k + s\)</span></div>
+<div class='ps-keyword'>end while</div></div>
+</div>
+</div></div>
+<p class="BodyText Justified"> 
+Questa versione riduce il numero di comunicazioni, poiché riduce il numero di prodotti scalari, tuttavia paga di instabilità numerica a causa dell'ortogonalizzazione ritardata dopo \(s\) passi. 
+Trovare metodi per gestire queste instabilità, scegliere il passo e scrivere varianti del gradiente coniugato (e degli altri metodi di Krylov come GMRES o BiCGstab) è un'area di intensa ricerca.
+Una <strong>tesi sull'argomento</strong>, a seconda del livello tra <em>laurea triennale</em> e <em>magistrale</em> si può focalizzare sullo studio delle proprietà matematica e 
+numeriche di queste varianti, la loro applicazione a problemi di interesse, aspetti implementativi all'interno della suite di librerie per il calcolo parallelo PSCToolkit, fino alla ricerca di 
+approcci e formulazioni alternative.<br>
+<strong>Competenze necessarie: </strong> algebra lineare numerica, programmazione con MATLAB;<br><strong>Competenze consigliate:</strong> calcolo parallelo;<br>
+<strong>Corsi suggeriti:</strong> Calcolo Scientifico, Istituzioni di Analisi Numerica (se alla <em>magistrale</em>).
+</p>
+
+
+<ol class="bibliography"><li><span id="MR3846291">Carson, Erin C. «The adaptive s-step conjugate gradient method». <i>SIAM J. Matrix Anal. Appl.</i>, vol. 39, n. 3, 2018, pagg. 1318–38, doi:10.1137/16M1107942.</span></li>
+<li><span id="MR1003940">Chronopoulos, A. T., e C. W. Gear. «On the efficient implementation of preconditioned s-step
+              conjugate gradient methods on multiprocessors with memory
+              hierarchy». <i>Parallel Comput.</i>, vol. 11, n. 1, 1989, pagg. 37–53, doi:10.1016/0167-8191(89)90062-8.</span></li>
+<li><span id="PSCToolkit">D’Ambra, Pasqua, et al. «Parallel Sparse Computation Toolkit». <i>Software Impacts</i>, vol. 15, 2023, pag. 100463, doi:https://doi.org/10.1016/j.simpa.2022.100463.</span></li></ol>
 
 <p class="Section">2 &ensp; Modellistica e Algoritmi per le Reti Complesse</p>
 
+<p class="BodyText Justified"> 
+L'ambito della ricerca in Reti Complesse si concentra sullo studio di sistemi costituiti da un elevato numero di elementi interconnessi (nodi) e dalle relazioni tra loro (archi), 
+con l'obiettivo di analizzare e comprendere la struttura e le dinamiche dei sistemi reali complessi. Le reti complesse si manifestano in una vasta gamma di contesti, come le reti 
+sociali, le reti biologiche (ad esempio, interazioni tra proteine), le reti di trasporto e le reti tecnologiche (come Internet). I modelli matematici usati per descriverle includono 
+il modello di rete casuale di Erdős-Rényi, le reti small-world di Watts-Strogatz e le reti a scala libera di Barabási-Albert, che descrivono come molte reti reali presentino nodi 
+altamente connessi (hub). L'analisi di reti complesse si avvale di algoritmi per rilevare comunità, analizzare la centralità dei nodi, trovare percorsi ottimali o modellare la diffusione 
+di informazioni o epidemie all'interno della rete. Questa ricerca ha applicazioni in campi quali la biologia, la sociologia, l'informatica, la fisica e l'economia, offrendo strumenti per 
+comprendere la struttura e il comportamento di sistemi complessi e interdipendenti.
+</p>
+
+<figure>
+  <img src="assets/images/graph1.png" alt="Rete Stradale di Pisa 1" style="width:45%">
+  <img src="assets/images/graph2.png" alt="Rete Stradale di Pisa 1" style="width:45%">
+  <figcaption>Fig.3 - Esempio di un fenomeno di trasporto sulla rete stradale di Pisa.</figcaption>
+</figure> 
+
+<p class="BodyText Justified"> 
+Una <strong>tesi</strong> sull'argomento si può focalizzare sia sugli aspetti modellistici, <em>e.g.</em>, la definizione e lo studio delle proprietà di modelli differenziali discreti,
+sia sugli aspetti algoritmici, <em>e.g.</em>, calcolo di funzioni di matrici, soluzione di equazioni differenziali definite sui grafi o algoritmi per l'estrazione di informazioni quali
+quelle di comunità e cluster da una rete.<br>
+<strong>Competenze necessarie: </strong> algebra lineare numerica, proprietà e soluzioni di ODE, programmazione con MATLAB;<br><strong>Competenze consigliate:</strong> matrici non negative;<br>
+<strong>Corsi suggeriti:</strong> Calcolo Scientifico, Metodi Numerici per le ODE, Metodi Numerici per le Catene di Markov, Metodi Numerici per le PDE, Istituzioni di Analisi Numerica (se alla <em>magistrale</em>).
+</p>
+
+<ol class="bibliography"><li><span id="MR3829156">Arioli, Mario, e Michele Benzi. «A finite element method for quantum graphs». <i>IMA J. Numer. Anal.</i>, vol. 38, n. 3, 2018, pagg. 1119–63, doi:10.1093/imanum/drx029.</span></li>
+<li><span id="MR4340667">Arrigo, Francesca, e Fabio Durastante. «Mittag-Leffler functions and their applications in network
+              science». <i>SIAM J. Matrix Anal. Appl.</i>, vol. 42, n. 4, 2021, pagg. 1581–601, doi:10.1137/21M1407276.</span></li>
+<li><span id="MR4130854">Benzi, Michele, et al. «Non-local network dynamics via fractional graph Laplacians». <i>J. Complex Netw.</i>, vol. 8, n. 3, 2020, pagg. cnaa017, 29, doi:10.1093/comnet/cnaa017.</span></li>
+<li><span id="MR4216832">Cipolla, Stefano, et al. «Nonlocal PageRank». <i>ESAIM Math. Model. Numer. Anal.</i>, vol. 55, n. 1, 2021, pagg. 77–97, doi:10.1051/m2an/2020071.</span></li>
+<li><span id="MR2736969">Estrada, Ernesto, e Desmond J. Higham. «Network properties revealed through matrix functions». <i>SIAM Rev.</i>, vol. 52, n. 4, 2010, pagg. 696–714, doi:10.1137/090761070.</span></li>
+<li><span id="MR4131346">Lim, Lek-Heng. «Hodge Laplacians on graphs». <i>SIAM Rev.</i>, vol. 62, n. 3, 2020, pagg. 685–715, doi:10.1137/18M1223101.</span></li>
+<li><span id="MR4783080">Ribando-Gros, Emily, et al. «Combinatorial and Hodge Laplacians: similarities and
+              differences». <i>SIAM Rev.</i>, vol. 66, n. 3, 2024, pagg. 575–601, doi:10.1137/22M1482299.</span></li></ol>
+
 <p class="Section">3 &ensp; Soluzione Numerica di Equazioni alle Derivate Parziali Frazionarie</p>
 
+<p class="BodyText Justified"> 
+L'ambito della ricerca in equazioni alle derivate frazionarie esplora estensioni delle classiche equazioni differenziali, introducendo derivate di ordine non intero, ovvero derivate frazionarie.
+Si consideri ad esempio la derivata di Riemann-Liouville che è una delle definizioni classiche di derivata frazionaria, che estende il concetto di derivata a ordini non interi. 
+Viene definita attraverso un'integrazione convolutiva,  utilizzando la formula integrale generalizzata della funzione, e permette di calcolare derivate di ordine frazionario (non intero) 
+di una funzione:
+\[
+D_t^\alpha f(t) = \frac{1}{\Gamma(n - \alpha)} \frac{\mathrm{d}^n}{\mathrm{d}t^n} \int_{a}^{t} (t - \tau)^{n-\alpha-1} f(\tau) \, \mathrm{d}\tau, \quad \alpha \in \mathbb{R}_+,\; n = \lceil \alpha \rceil.
+\]
+Le equazioni differenziali definite in termini di questi operatori sono particolarmente efficaci nel modellare fenomeni complessi caratterizzati da memoria e dinamiche non locali, dove l'evoluzione 
+di un sistema non dipende solo dal suo stato attuale ma anche dalla sua storia passata. Le derivate frazionarie permettono di descrivere processi come la diffusione anomala, che si osserva in materiali 
+porosi, nei mercati finanziari o in  sistemi biologici, e sono ampiamente utilizzate nella fisica dei mezzi continui, nell'economia, nell'ingegneria e nella biologia. Le equazioni frazionarie consentono 
+anche di modellare fenomeni  di viscoelasticità, trasporto di cariche, e sistemi complessi con dinamiche a lungo termine. La ricerca si concentra sia sugli aspetti teorici, come l'analisi dell'esistenza 
+e unicità delle soluzioni, sia sugli algoritmi numerici per risolvere tali equazioni, data la loro complessità intrinseca. Lo sviluppo di metodi efficienti per risolvere equazioni alle derivate 
+frazionarie è cruciale per  la simulazione di molti sistemi reali, dove i modelli tradizionali a derivate intere risultano inadeguati.
+</p>
+
+<p class="BodyText Justified">
+Una <strong>tesi</strong> sull'argomento è tipicamente focalizzata sulla definizione di strategie per la discretizzazione di equazioni di questo tipo e sulla costruzione di solutori efficienti per i
+problemi discreti così ottenuti.<br>
+<strong>Competenze necessarie: </strong> algebra lineare numerica, proprietà e soluzioni di ODE e PDE, programmazione con MATLAB;<br>
+<strong>Corsi suggeriti:</strong> Calcolo Scientifico, Metodi Numerici per le ODE, Metodi Numerici per le PDE, Istituzioni di Analisi Numerica (se alla <em>magistrale</em>).
+</p>
+
+<ol class="bibliography"><li><span id="MR3989621">Aceto, L., et al. «Rational Krylov methods for functions of matrices with
+              applications to fractional partial differential equations». <i>J. Comput. Phys.</i>, vol. 396, 2019, pagg. 470–82, doi:10.1016/j.jcp.2019.07.009.</span></li>
+<li><span id="MR4516169">Aceto, Lidia, e Fabio Durastante. «Efficient computation of the Wright function and its
+              applications to fractional diffusion-wave equations». <i>ESAIM Math. Model. Numer. Anal.</i>, vol. 56, n. 6, 2022, pagg. 2181–96, doi:10.1051/m2an/2022069.</span></li>
+<li><span id="MR4617155">Garrappa, Roberto, e Andrea Giusti. «A computational approach to exponential-type variable-order
+              fractional differential equations». <i>J. Sci. Comput.</i>, vol. 96, n. 3, 2023, pagg. Paper No. 63, 19, doi:10.1007/s10915-023-02283-6.</span></li>
+<li><span id="MR4268683">Garrappa, Roberto, et al. «Variable-order fractional calculus: a change of perspective». <i>Commun. Nonlinear Sci. Numer. Simul.</i>, vol. 102, 2021, pagg. Paper No. 105904, 16, doi:10.1016/j.cnsns.2021.105904.</span></li></ol>
 
 
 
