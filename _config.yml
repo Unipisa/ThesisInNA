@@ -1,0 +1,11 @@
+plugin:
+    - pseudocode
+    - jekyll-scholar
+site-css:
+    - "/assets/css/pseudocode.css"
+scholar:
+    style: modern-language-association
+    locale: it
+    source: _bibliography
+    sort_by: author
+    order: ascending  
